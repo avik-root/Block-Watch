@@ -42,24 +42,24 @@
   }
 
   .dark {
-    --background: 225 23% 12%; /* Very Dark Blue */
+    --background: 240 10% 4%; /* Super Dark Black/Blue */
     --foreground: 210 22% 95%; /* Light Gray #EDF2F7 */
-    --card: 225 23% 18%; /* Darker Blue for cards */
+    --card: 225 23% 10%; /* Darker Blue for cards, slightly lighter than pure black */
     --card-foreground: 210 22% 95%; /* Light Gray #EDF2F7 */
-    --popover: 225 23% 10%; /* Even Darker Blue for popovers */
+    --popover: 225 23% 8%; /* Even Darker Blue for popovers */
     --popover-foreground: 210 22% 95%; /* Light Gray #EDF2F7 */
     --primary: 173 58% 50%; /* Teal #4DC0B5 */
     --primary-foreground: 225 23% 10%; /* Dark text on Teal */
-    --secondary: 225 23% 25%; /* Lighter Dark Blue */
+    --secondary: 225 23% 15%; /* Lighter Dark Blue */
     --secondary-foreground: 210 22% 95%; /* Light Gray #EDF2F7 */
-    --muted: 225 23% 25%; /* Lighter Dark Blue */
+    --muted: 225 23% 15%; /* Lighter Dark Blue */
     --muted-foreground: 210 22% 75%; /* Muted Light Gray */
     --accent: 173 58% 60%; /* Slightly Lighter Teal */
     --accent-foreground: 225 23% 10%; /* Dark text on Teal */
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 225 23% 25%; /* Lighter Dark Blue Border */
-    --input: 225 23% 28%; /* Lighter Dark Blue Input BG */
+    --border: 225 23% 18%; /* Dark Blue Border, slightly lighter than bg */
+    --input: 225 23% 16%; /* Dark Blue Input BG */
     --ring: 173 58% 50%; /* Teal #4DC0B5 */
     --chart-1: 173 58% 50%;
     --chart-2: 210 22% 75%;
@@ -68,13 +68,13 @@
     --chart-5: 0 70% 60%;
 
     /* Dark Sidebar specific theme */
-    --sidebar-background: 225 23% 10%; /* Even Darker Blue for Sidebar */
+    --sidebar-background: 240 10% 6%; /* Slightly Lighter Super Dark Black/Blue for Sidebar */
     --sidebar-foreground: 210 22% 85%; /* Light Gray text */
     --sidebar-primary: 173 58% 55%; /* Teal for active/hovered sidebar items */
     --sidebar-primary-foreground: 225 23% 8%; /* Darker text on Teal */
-    --sidebar-accent: 225 23% 15%; /* Slightly lighter Dark Blue for hover states */
+    --sidebar-accent: 225 23% 12%; /* Slightly lighter Dark Blue for hover states */
     --sidebar-accent-foreground: 0 0% 98%; /* Almost White text on hover */
-    --sidebar-border: 225 23% 14%; /* Darker border for sidebar elements */
+    --sidebar-border: 225 23% 10%; /* Darker border for sidebar elements */
     --sidebar-ring: 173 58% 55%; /* Teal for focus ring */
   }
 }
