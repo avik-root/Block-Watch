@@ -34,8 +34,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {/* Header removed */}
-          <main className="flex-1 overflow-auto p-4 md:p-6">
+          {/* Main content area: padding removed to be handled by sub-layouts or pages */}
+          <main className="flex-1 overflow-auto">
             {children}
           </main>
           <Toaster />

@@ -8,21 +8,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import {
   AlertTriangle,
-  DollarSign,
   FileText,
   Search,
   Eye,
   Copy,
   BarChart3,
-  ShieldAlert as ShieldAlertIconLucide, // Renamed to avoid conflict
 } from 'lucide-react';
-import { ThemeToggleButton } from '@/components/theme-toggle-button';
 import { ThreatScoreBadge } from '@/components/threat-score-badge';
-import { ThreatIcon, type ThreatType } from '@/components/threat-icon';
+import { ThreatIcon } from '@/components/threat-icon';
 import type { Threat, FlaggedEntity } from '@/types/threat';
+import type { User } from '@/types/user';
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -41,23 +38,25 @@ import {
   ChartLegendContent,
 } from "@/components/ui/chart"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts"
-import Link from 'next/link';
-import { UserCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { ShieldAlert } from 'lucide-react'; // Corrected import
 
-
-const mockThreats: Threat[] = [
+const baseMockThreats: Threat[] = [
   { id: '1', type: 'Flash Loan Attack', address: '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B', threatScore: 85, timestamp: new Date(Date.now() - 3600000).toISOString(), description: 'Suspiciously large flash loan detected, potential market manipulation.', blockchain: 'Ethereum', rawDetails: 'Function: flashLoan(...)\nParameters: amount=100000ETH, asset=ETH, target=0x123...\nGas used: 250000' },
   { id: '2', type: 'Honeypot', address: '0x1234567890abcdef1234567890abcdef12345678', threatScore: 92, timestamp: new Date(Date.now() - 7200000).toISOString(), description: 'Contract appears to trap funds, multiple failed withdrawals.', blockchain: 'BSC', rawDetails: 'Contract Source (partial):\nmodifier onlyOwner() {\n  require(msg.sender == owner, "Not owner");\n  // No way to change owner or withdraw for non-owner\n  _; \n}' },
   { id: '3', type: 'Rugpull', address: '0xDeadBeefDeadBeefDeadBeefDeadBeefDeadBeef01', threatScore: 99, timestamp: new Date(Date.now() - 10800000).toISOString(), description: 'Sudden liquidity removal and token dump by deployer.', blockchain: 'Polygon', rawDetails: 'Transaction Hash: 0xabcdef12345...\nDeployer Address: 0xDeployer...\nActions: removeLiquidity, transfer large amount of tokens to CEX.' },
   { id: '4', type: 'Bot/Drainer', address: '0xBadBotBadBotBadBotBadBotBadBotBadBot02', threatScore: 78, timestamp: new Date(Date.now() - 14400000).toISOString(), description: 'Automated script interacting with multiple wallets, draining small amounts.', blockchain: 'Ethereum', rawDetails: 'Interacted with 50+ wallets in the last hour. Typical transaction involves approving token spend and then transferring out.' },
   { id: '5', type: 'Smart Contract Vulnerability', address: '0xVulnerableContractVulnerableContract03', threatScore: 65, timestamp: new Date(Date.now() - 18000000).toISOString(), description: 'Potential reentrancy vulnerability identified in withdraw function.', blockchain: 'BSC', rawDetails: 'Function: withdraw(...)\n// Code snippet showing potential reentrancy\n  IERC20(token).transfer(msg.sender, amount);\n  balances[msg.sender] -= amount;' },
+  { id: '6', type: 'Flash Loan Attack', address: '0xAnotherFlashLoanAttackAddressExample', threatScore: 70, timestamp: new Date(Date.now() - 21600000).toISOString(), description: 'Secondary flash loan attack targeting a different protocol.', blockchain: 'Polygon', rawDetails: 'Details specific to this attack.' },
 ];
 
-const mockFlaggedEntities: FlaggedEntity[] = [
+const baseMockFlaggedEntities: FlaggedEntity[] = [
   { id: 'e1', address: '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B', entityType: 'Wallet', overallThreatScore: 85, lastThreatType: 'Flash Loan Attack', threatHistoryCount: 3, blockchain: 'Ethereum', tags: ['High Activity', 'Market Manipulator'], firstSeen: new Date(Date.now() - 86400000 * 5).toISOString(), lastSeen: new Date(Date.now() - 3600000).toISOString() },
   { id: 'e2', address: '0x1234567890abcdef1234567890abcdef12345678', entityType: 'Contract', overallThreatScore: 92, lastThreatType: 'Honeypot', threatHistoryCount: 1, blockchain: 'BSC', tags: ['Scam', 'Funds Locker'], firstSeen: new Date(Date.now() - 86400000 * 2).toISOString(), lastSeen: new Date(Date.now() - 7200000).toISOString() },
   { id: 'e3', address: '0xDeployerAddressForRugPullContract', entityType: 'Wallet', overallThreatScore: 99, lastThreatType: 'Rugpull', threatHistoryCount: 5, blockchain: 'Polygon', tags: ['Scammer', 'Token Dumper'], firstSeen: new Date(Date.now() - 86400000 * 10).toISOString(), lastSeen: new Date(Date.now() - 10800000).toISOString() },
+  { id: 'e4', address: '0xYetAnotherFlaggedWalletOrContract', entityType: 'Contract', overallThreatScore: 70, lastThreatType: 'Smart Contract Vulnerability', threatHistoryCount: 2, blockchain: 'Ethereum', tags: ['Vulnerable', 'Needs Audit'], firstSeen: new Date(Date.now() - 86400000 * 3).toISOString(), lastSeen: new Date(Date.now() - 18000000).toISOString() },
 ];
+
 
 const chartData = [
   { threatType: "Flash Loan", count: 12, fill: "var(--color-flashLoan)" },
@@ -82,20 +81,49 @@ const chartConfig = {
 export default function DashboardPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedThreat, setSelectedThreat] = useState<Threat | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const { toast } = useToast();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedUser = localStorage.getItem('currentUser');
+      if (storedUser) {
+        setCurrentUser(JSON.parse(storedUser));
+      } else {
+        router.push('/signin'); // Redirect if no user found
+      }
+    }
+  }, [router]);
+  
+  const mockThreats = useMemo(() => {
+    if (!currentUser) return [];
+    if (currentUser.id === 'user1') return baseMockThreats; // Alice sees all
+    if (currentUser.id === 'user2') return baseMockThreats.slice(0, 4); // Bob sees 4
+    if (currentUser.id === 'user3') return baseMockThreats.slice(0, 3); // Charlie sees 3
+    return baseMockThreats.slice(1, 5); // Others see a different subset
+  }, [currentUser]);
+
+  const mockFlaggedEntities = useMemo(() => {
+    if (!currentUser) return [];
+    if (currentUser.id === 'user1') return baseMockFlaggedEntities.slice(0,2); // Alice sees 2
+    if (currentUser.id === 'user2') return baseMockFlaggedEntities; // Bob sees all
+    return baseMockFlaggedEntities.slice(1,3); // Others see a different subset
+  }, [currentUser]);
+
 
   const filteredThreats = useMemo(() => 
     mockThreats.filter(threat => 
       threat.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
       threat.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       threat.type.toLowerCase().includes(searchTerm.toLowerCase())
-    ), [searchTerm]);
+    ), [searchTerm, mockThreats]);
 
   const filteredFlaggedEntities = useMemo(() =>
     mockFlaggedEntities.filter(entity =>
       entity.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
       entity.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-    ), [searchTerm]);
+    ), [searchTerm, mockFlaggedEntities]);
 
   const handleCopyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -113,21 +141,15 @@ export default function DashboardPage() {
     });
   };
   
-  // Effect to ensure client-side state matches server for hydration
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  if (!mounted) {
+  if (!mounted || !currentUser) {
     // Render a placeholder or skeleton for SSR, then full content on client
+    // Or if currentUser is not yet loaded
     return (
-      <div className="flex flex-col gap-6 p-4 md:p-6">
-         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-semibold text-foreground">Threat Dashboard</h1>
-          <div className="flex items-center gap-2">
-            <ThemeToggleButton />
-            <UserCircle className="h-8 w-8 text-muted-foreground" />
-          </div>
-        </div>
+      <div className="flex flex-col gap-6">
+        <h1 className="text-3xl font-semibold text-foreground">Threat Dashboard</h1>
         <div className="h-12 bg-muted rounded-lg animate-pulse"></div> {/* Search bar placeholder */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
@@ -146,19 +168,7 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-6">
-       <div className="flex justify-between items-center">
-        <Link href="/" className="flex items-center gap-2">
-            <ShieldAlertIconLucide className="w-7 h-7 text-primary" />
-            <span className="text-lg font-semibold text-foreground">
-                BlockWatch
-            </span>
-        </Link>
-        <div className="flex items-center gap-4">
-            <ThemeToggleButton />
-            <UserCircle className="h-8 w-8 text-muted-foreground" />
-        </div>
-      </div>
-      <h1 className="text-3xl font-semibold text-foreground">Threat Dashboard</h1>
+      <h1 className="text-3xl font-semibold text-foreground">Threat Dashboard for {currentUser.name}</h1>
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
         <Input
@@ -178,19 +188,19 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-foreground">{mockThreats.length}</div>
-            <p className="text-xs text-muted-foreground">+5 in last 24 hours</p>
+            <p className="text-xs text-muted-foreground">+ {mockThreats.length > 3 ? 2 : 1} in last 24 hours for you</p>
           </CardContent>
         </Card>
         <Card className="shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">High-Risk Entities</CardTitle>
-            <ShieldAlertIconLucide className="h-5 w-5 text-orange-500" />
+            <ShieldAlert className="h-5 w-5 text-orange-500" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-foreground">
               {mockFlaggedEntities.filter(e => e.overallThreatScore >= 75).length}
             </div>
-            <p className="text-xs text-muted-foreground">Actively monitored</p>
+            <p className="text-xs text-muted-foreground">Actively monitored by you</p>
           </CardContent>
         </Card>
         <Card className="shadow-lg">
@@ -220,7 +230,7 @@ export default function DashboardPage() {
           <Card className="shadow-lg col-span-1 lg:col-span-2">
             <CardHeader>
               <CardTitle>Recent Threats</CardTitle>
-              <CardDescription>Live feed of detected malicious activities and vulnerabilities.</CardDescription>
+              <CardDescription>Live feed of detected malicious activities and vulnerabilities relevant to you.</CardDescription>
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[400px]">
@@ -273,7 +283,7 @@ export default function DashboardPage() {
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle>Flagged Entities</CardTitle>
-              <CardDescription>Wallets and contracts with notable threat history.</CardDescription>
+              <CardDescription>Wallets and contracts with notable threat history relevant to you.</CardDescription>
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[300px]">

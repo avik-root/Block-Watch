@@ -3,7 +3,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ShieldCheck, ArrowRight, LogIn, Wallet, Moon, Sun } from "lucide-react";
+import { ShieldCheck, ArrowRight, LogIn } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { ThemeToggleButton } from "@/components/theme-toggle-button";
@@ -24,8 +24,8 @@ export default function HomePage() {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mb-16 px-4">
-        <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300">
+      <div className="flex justify-center max-w-5xl mb-16 px-4">
+        <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 w-full max-w-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <LogIn className="w-6 h-6 text-accent" />
@@ -41,48 +41,6 @@ export default function HomePage() {
             <Button asChild className="w-full">
               <Link href="/signin">
                 Sign In <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </CardFooter>
-        </Card>
-
-        <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Wallet className="w-6 h-6 text-accent" />
-              Wallet Integration
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">
-              Connect your preferred wallet to monitor assets and interact securely with dApps.
-            </p>
-          </CardContent>
-           <CardFooter>
-            <Button asChild className="w-full" variant="outline">
-              <Link href="/connect-wallet">
-                Connect Wallet <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </CardFooter>
-        </Card>
-
-        <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ShieldCheck className="w-6 h-6 text-accent" />
-              Threat Dashboard
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">
-              Dive into comprehensive threat analysis and manage your smart contract security. (Requires Sign In)
-            </p>
-          </CardContent>
-          <CardFooter>
-             <Button asChild className="w-full">
-              <Link href="/dashboard">
-                Go to Dashboard <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </CardFooter>
