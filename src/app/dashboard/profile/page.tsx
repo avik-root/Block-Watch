@@ -3,9 +3,10 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User as UserIcon, Mail, LogOut } from 'lucide-react'; // Renamed User to UserIcon
+import { User as UserIcon, Mail, LogOut, ArrowLeft } from 'lucide-react'; // Renamed User to UserIcon
 import type { User } from '@/types/user';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -36,7 +37,7 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-start pt-10">
+      <div className="flex justify-center items-start pt-10 px-4">
         <Card className="w-full max-w-lg shadow-xl">
           <CardHeader className="items-center text-center">
             <Skeleton className="h-24 w-24 rounded-full mb-4" />
@@ -53,6 +54,7 @@ export default function ProfilePage() {
               <Skeleton className="h-4 w-full" />
             </div>
             <Skeleton className="h-10 w-full mt-6" />
+            <Skeleton className="h-10 w-full mt-2" />
           </CardContent>
         </Card>
       </div>
@@ -65,7 +67,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="flex justify-center items-start pt-10">
+    <div className="flex justify-center items-start pt-10 px-4">
       <Card className="w-full max-w-lg shadow-xl">
         <CardHeader className="items-center text-center">
           <Avatar className="w-24 h-24 mb-4 text-6xl border-2 border-primary">
@@ -94,7 +96,12 @@ export default function ProfilePage() {
               Email: {currentUser.email}
             </span>
           </div>
-           <Button onClick={handleSignOut} variant="outline" className="w-full mt-6">
+          <Button asChild variant="outline" className="w-full mt-6">
+            <Link href="/dashboard">
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
+            </Link>
+          </Button>
+           <Button onClick={handleSignOut} variant="destructive" className="w-full">
             <LogOut className="mr-2 h-4 w-4" /> Sign Out
           </Button>
         </CardContent>
@@ -102,3 +109,4 @@ export default function ProfilePage() {
     </div>
   );
 }
+
