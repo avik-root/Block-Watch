@@ -14,8 +14,9 @@ import {
   Eye,
   Copy,
   BarChart3,
-  ShieldAlert as ShieldAlertIcon, // Renamed to avoid conflict
+  ShieldAlert as ShieldAlertIconLucide, // Renamed to avoid conflict
 } from 'lucide-react';
+import { ThemeToggleButton } from '@/components/theme-toggle-button';
 import { ThreatScoreBadge } from '@/components/threat-score-badge';
 import { ThreatIcon, type ThreatType } from '@/components/threat-icon';
 import type { Threat, FlaggedEntity } from '@/types/threat';
@@ -40,6 +41,9 @@ import {
   ChartLegendContent,
 } from "@/components/ui/chart"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts"
+import Link from 'next/link';
+import { UserCircle } from 'lucide-react';
+
 
 const mockThreats: Threat[] = [
   { id: '1', type: 'Flash Loan Attack', address: '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B', threatScore: 85, timestamp: new Date(Date.now() - 3600000).toISOString(), description: 'Suspiciously large flash loan detected, potential market manipulation.', blockchain: 'Ethereum', rawDetails: 'Function: flashLoan(...)\nParameters: amount=100000ETH, asset=ETH, target=0x123...\nGas used: 250000' },
@@ -116,7 +120,14 @@ export default function DashboardPage() {
   if (!mounted) {
     // Render a placeholder or skeleton for SSR, then full content on client
     return (
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 p-4 md:p-6">
+         <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-semibold text-foreground">Threat Dashboard</h1>
+          <div className="flex items-center gap-2">
+            <ThemeToggleButton />
+            <UserCircle className="h-8 w-8 text-muted-foreground" />
+          </div>
+        </div>
         <div className="h-12 bg-muted rounded-lg animate-pulse"></div> {/* Search bar placeholder */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
@@ -135,6 +146,18 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-6">
+       <div className="flex justify-between items-center">
+        <Link href="/" className="flex items-center gap-2">
+            <ShieldAlertIconLucide className="w-7 h-7 text-primary" />
+            <span className="text-lg font-semibold text-foreground">
+                BlockWatch
+            </span>
+        </Link>
+        <div className="flex items-center gap-4">
+            <ThemeToggleButton />
+            <UserCircle className="h-8 w-8 text-muted-foreground" />
+        </div>
+      </div>
       <h1 className="text-3xl font-semibold text-foreground">Threat Dashboard</h1>
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -161,7 +184,7 @@ export default function DashboardPage() {
         <Card className="shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">High-Risk Entities</CardTitle>
-            <ShieldAlertIcon className="h-5 w-5 text-orange-500" />
+            <ShieldAlertIconLucide className="h-5 w-5 text-orange-500" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-foreground">
@@ -192,7 +215,7 @@ export default function DashboardPage() {
         </Card>
       </div>
       
-      <AlertDialog> {/* Moved AlertDialog to wrap the part of the table that uses its trigger */}
+      <AlertDialog> 
         <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
           <Card className="shadow-lg col-span-1 lg:col-span-2">
             <CardHeader>

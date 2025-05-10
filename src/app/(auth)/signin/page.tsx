@@ -3,14 +3,17 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, LogIn, User } from "lucide-react";
+import { LogIn, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ThemeToggleButton } from "@/components/theme-toggle-button";
 
 const mockUsers = [
   { id: "user1", name: "Alice Wonderland", email: "alice@example.com" },
   { id: "user2", name: "Bob The Builder", email: "bob@example.com" },
   { id: "user3", name: "Charlie Brown", email: "charlie@example.com" },
+  { id: "user4", name: "Diana Prince", email: "diana@example.com"},
+  { id: "user5", name: "Edward Scissorhands", email: "edward@example.com"},
 ];
 
 export default function SignInPage() {
@@ -24,7 +27,10 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] py-12 bg-background px-4"> {/* Adjusted min-h */}
+    <div className="flex flex-col items-center justify-center min-h-screen py-12 bg-background px-4">
+      <div className="absolute top-4 right-4">
+        <ThemeToggleButton />
+      </div>
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="text-center">
           <LogIn className="w-16 h-16 text-primary mx-auto mb-4" />
@@ -37,7 +43,7 @@ export default function SignInPage() {
               key={user.id}
               onClick={() => handleSignIn(user.name)} 
               className="w-full justify-start"
-              variant={index === 0 ? "default" : index === 1 ? "secondary" : "outline"}
+              variant={index % 3 === 0 ? "default" : index % 3 === 1 ? "secondary" : "outline"}
             >
               <User className="mr-2 h-4 w-4" />
               Sign In as {user.name}

@@ -3,13 +3,17 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ShieldCheck, ArrowRight, LogIn, Wallet } from "lucide-react";
+import { ShieldCheck, ArrowRight, LogIn, Wallet, Moon, Sun } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { ThemeToggleButton } from "@/components/theme-toggle-button";
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] py-12 bg-background"> {/* Adjusted min-h if header is 4rem */}
+    <div className="flex flex-col items-center justify-center min-h-screen py-12 bg-background">
+      <div className="absolute top-4 right-4">
+        <ThemeToggleButton />
+      </div>
       <header className="text-center mb-12 px-4">
         <ShieldCheck className="w-24 h-24 text-primary mx-auto mb-4" />
         <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">

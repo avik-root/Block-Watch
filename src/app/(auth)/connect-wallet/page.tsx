@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ThemeToggleButton } from "@/components/theme-toggle-button";
 
 export default function ConnectWalletPage() {
   const router = useRouter();
@@ -30,7 +31,10 @@ export default function ConnectWalletPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] py-12 bg-background px-4"> {/* Adjusted min-h */}
+    <div className="flex flex-col items-center justify-center min-h-screen py-12 bg-background px-4">
+      <div className="absolute top-4 right-4">
+        <ThemeToggleButton />
+      </div>
       <Card className="w-full max-w-lg shadow-xl">
         <CardHeader className="text-center">
           <Wallet className="w-16 h-16 text-primary mx-auto mb-4" />
@@ -81,7 +85,7 @@ export default function ConnectWalletPage() {
           <Button 
             onClick={handleProceed} 
             className="w-full"
-            disabled={!isWalletConnected && false} // Enable proceed button even if not connected for mock flow
+            disabled={!isWalletConnected}
           >
             Proceed to Dashboard <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
