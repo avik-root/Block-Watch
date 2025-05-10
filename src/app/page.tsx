@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
@@ -13,7 +14,8 @@ import {
   Search,
   Eye,
   Copy,
-  BarChart3
+  BarChart3,
+  ShieldAlert, // Added ShieldAlert import
 } from 'lucide-react';
 import { ThreatScoreBadge } from '@/components/threat-score-badge';
 import { ThreatIcon, type ThreatType } from '@/components/threat-icon';
@@ -356,3 +358,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+
