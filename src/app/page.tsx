@@ -15,7 +15,7 @@ import {
   Eye,
   Copy,
   BarChart3,
-  ShieldAlert, // Added ShieldAlert import
+  ShieldAlert,
 } from 'lucide-react';
 import { ThreatScoreBadge } from '@/components/threat-score-badge';
 import { ThreatIcon, type ThreatType } from '@/components/threat-icon';
@@ -29,7 +29,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
+  // AlertDialogTrigger, // Removed as it's no longer used directly for the table row button
 } from "@/components/ui/alert-dialog";
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from "@/hooks/use-toast";
@@ -216,12 +216,10 @@ export default function DashboardPage() {
                       </TableCell>
                       <TableCell>{new Date(threat.timestamp).toLocaleString()}</TableCell>
                       <TableCell className="text-right">
-                        <AlertDialogTrigger asChild>
-                          <Button variant="outline" size="sm" onClick={() => setSelectedThreat(threat)}>
-                            <Eye className="h-4 w-4 mr-1 md:mr-2" />
-                            <span className="hidden md:inline">View</span>
-                          </Button>
-                        </AlertDialogTrigger>
+                        <Button variant="outline" size="sm" onClick={() => setSelectedThreat(threat)}>
+                          <Eye className="h-4 w-4 mr-1 md:mr-2" />
+                          <span className="hidden md:inline">View</span>
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
