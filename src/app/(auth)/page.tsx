@@ -3,10 +3,11 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ShieldCheck, ArrowRight, LogIn } from "lucide-react";
+import { ArrowRight, LogIn } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { ThemeToggleButton } from "@/components/theme-toggle-button";
+import { FuturisticLogo } from "@/components/futuristic-logo"; // Import the new logo
 
 export default function HomePage() {
   return (
@@ -15,7 +16,7 @@ export default function HomePage() {
         <ThemeToggleButton />
       </div>
       <header className="text-center mb-12 px-4">
-        <ShieldCheck className="w-24 h-24 text-primary mx-auto mb-4" />
+        <FuturisticLogo className="w-24 h-24 text-primary mx-auto mb-4" /> {/* Replaced Icon */}
         <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
           BlockWatch AI Sentinel
         </h1>
@@ -62,19 +63,19 @@ export default function HomePage() {
           </div>
           <ul className="space-y-4 text-card-foreground">
             <li className="flex items-start gap-3">
-              <ShieldCheck className="w-6 h-6 text-primary mt-1 shrink-0" />
+              <FuturisticLogo className="w-6 h-6 text-primary mt-1 shrink-0" /> {/* Replaced Icon */}
               <span><strong>AI-Powered Detection:</strong> Leverage cutting-edge AI to identify sophisticated threats, including flash loan attacks, rug pulls, and smart contract vulnerabilities.</span>
             </li>
             <li className="flex items-start gap-3">
-              <ShieldCheck className="w-6 h-6 text-primary mt-1 shrink-0" />
+              <FuturisticLogo className="w-6 h-6 text-primary mt-1 shrink-0" /> {/* Replaced Icon */}
               <span><strong>Real-Time Alerts:</strong> Receive instant notifications on potential risks, enabling swift action to protect your assets.</span>
             </li>
             <li className="flex items-start gap-3">
-              <ShieldCheck className="w-6 h-6 text-primary mt-1 shrink-0" />
+              <FuturisticLogo className="w-6 h-6 text-primary mt-1 shrink-0" /> {/* Replaced Icon */}
               <span><strong>Comprehensive Analytics:</strong> Gain deep insights from our intuitive dashboard, visualizing threat landscapes and risk scores.</span>
             </li>
              <li className="flex items-start gap-3">
-              <ShieldCheck className="w-6 h-6 text-primary mt-1 shrink-0" />
+              <FuturisticLogo className="w-6 h-6 text-primary mt-1 shrink-0" /> {/* Replaced Icon */}
               <span><strong>Multi-Blockchain Support:</strong> Monitor activities across major blockchains like Ethereum, BSC, and Polygon.</span>
             </li>
           </ul>
