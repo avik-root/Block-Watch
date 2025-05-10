@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ThemeToggleButton } from "@/components/theme-toggle-button";
 import type { User } from "@/types/user";
+import React, { useState, useEffect } from 'react';
 
 const mockUsers: User[] = [
   { id: "user1", name: "Alice Wonderland", email: "alice@example.com", avatarUrl: "https://picsum.photos/seed/alice/40/40" },
@@ -19,6 +20,11 @@ const mockUsers: User[] = [
 
 export default function SignInPage() {
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleSignIn = (user: User) => {
     console.log(`Attempting mock sign in as ${user.name}...`);
@@ -35,7 +41,7 @@ export default function SignInPage() {
       <div className="absolute top-4 right-4">
         <ThemeToggleButton />
       </div>
-      <Card className="w-full max-w-md shadow-xl">
+      <Card className={`w-full max-w-md shadow-xl hover:shadow-2xl transition-all duration-700 ease-out transform hover:scale-[1.02] ${isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <CardHeader className="text-center">
           <LogIn className="w-16 h-16 text-primary mx-auto mb-4" />
           <CardTitle className="text-3xl">Sign In</CardTitle>
@@ -46,7 +52,7 @@ export default function SignInPage() {
             <Button 
               key={user.id}
               onClick={() => handleSignIn(user)} 
-              className="w-full justify-start"
+              className="w-full justify-start hover:brightness-110 active:scale-95 transition-all"
               variant={index % 3 === 0 ? "default" : index % 3 === 1 ? "secondary" : "outline"}
             >
               <UserIcon className="mr-2 h-4 w-4" />

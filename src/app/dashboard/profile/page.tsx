@@ -14,9 +14,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function ProfilePage() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
+    setIsMounted(true);
     if (typeof window !== 'undefined') {
       const storedUser = localStorage.getItem('currentUser');
       if (storedUser) {
@@ -35,7 +37,7 @@ export default function ProfilePage() {
     router.push('/signin');
   };
 
-  if (loading) {
+  if (loading || !isMounted) {
     return (
       <div className="flex justify-center items-start pt-10 px-4">
         <Card className="w-full max-w-lg shadow-xl">
@@ -68,9 +70,9 @@ export default function ProfilePage() {
 
   return (
     <div className="flex justify-center items-start pt-10 px-4">
-      <Card className="w-full max-w-lg shadow-xl">
+      <Card className={`w-full max-w-lg shadow-xl hover:shadow-2xl transition-all duration-300 ease-out transform hover:scale-[1.01] ${isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <CardHeader className="items-center text-center">
-          <Avatar className="w-24 h-24 mb-4 text-6xl border-2 border-primary">
+          <Avatar className={`w-24 h-24 mb-4 text-6xl border-2 border-primary hover:ring-4 hover:ring-primary/50 transition-all duration-300`}>
             {currentUser.avatarUrl ? (
               <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} data-ai-hint="user avatar"/>
             ) : (
@@ -96,12 +98,12 @@ export default function ProfilePage() {
               Email: {currentUser.email}
             </span>
           </div>
-          <Button asChild variant="outline" className="w-full mt-6">
+          <Button asChild variant="outline" className="w-full mt-6 hover:brightness-105 active:scale-95 transition-all">
             <Link href="/dashboard">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
             </Link>
           </Button>
-           <Button onClick={handleSignOut} variant="destructive" className="w-full">
+           <Button onClick={handleSignOut} variant="destructive" className="w-full hover:brightness-110 active:scale-95 transition-all">
             <LogOut className="mr-2 h-4 w-4" /> Sign Out
           </Button>
         </CardContent>
@@ -109,4 +111,3 @@ export default function ProfilePage() {
     </div>
   );
 }
-

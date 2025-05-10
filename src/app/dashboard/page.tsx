@@ -13,6 +13,7 @@ import {
   Eye,
   Copy,
   BarChart3,
+  ShieldAlert,
 } from 'lucide-react';
 import { ThreatScoreBadge } from '@/components/threat-score-badge';
 import { ThreatIcon } from '@/components/threat-icon';
@@ -39,7 +40,7 @@ import {
 } from "@/components/ui/chart"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts"
 import { useRouter } from 'next/navigation';
-import { ShieldAlert } from 'lucide-react'; // Corrected import
+
 
 const baseMockThreats: Threat[] = [
   { id: '1', type: 'Flash Loan Attack', address: '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B', threatScore: 85, timestamp: new Date(Date.now() - 3600000).toISOString(), description: 'Suspiciously large flash loan detected, potential market manipulation.', blockchain: 'Ethereum', rawDetails: 'Function: flashLoan(...)\nParameters: amount=100000ETH, asset=ETH, target=0x123...\nGas used: 250000' },
@@ -84,6 +85,7 @@ export default function DashboardPage() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const { toast } = useToast();
   const router = useRouter();
+  const [contentMounted, setContentMounted] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -94,6 +96,9 @@ export default function DashboardPage() {
         router.push('/signin'); // Redirect if no user found
       }
     }
+    // For animations
+    const timer = setTimeout(() => setContentMounted(true), 100);
+    return () => clearTimeout(timer);
   }, [router]);
   
   const mockThreats = useMemo(() => {
@@ -141,12 +146,9 @@ export default function DashboardPage() {
     });
   };
   
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
 
-  if (!mounted || !currentUser) {
+  if (!contentMounted || !currentUser) {
     // Render a placeholder or skeleton for SSR, then full content on client
-    // Or if currentUser is not yet loaded
     return (
       <div className="flex flex-col gap-6">
         <h1 className="text-3xl font-semibold text-foreground">Threat Dashboard</h1>
@@ -168,8 +170,8 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-3xl font-semibold text-foreground">Threat Dashboard for {currentUser.name}</h1>
-      <div className="relative">
+      <h1 className={`text-3xl font-semibold text-foreground transition-all duration-500 ease-out ${contentMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>Threat Dashboard for {currentUser.name}</h1>
+      <div className={`relative transition-all duration-500 ease-out delay-100 ${contentMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
         <Input
           type="search"
@@ -180,54 +182,29 @@ export default function DashboardPage() {
         />
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-lg">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Threats Detected</CardTitle>
-            <AlertTriangle className="h-5 w-5 text-destructive" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-foreground">{mockThreats.length}</div>
-            <p className="text-xs text-muted-foreground">+ {mockThreats.length > 3 ? 2 : 1} in last 24 hours for you</p>
-          </CardContent>
-        </Card>
-        <Card className="shadow-lg">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">High-Risk Entities</CardTitle>
-            <ShieldAlert className="h-5 w-5 text-orange-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-foreground">
-              {mockFlaggedEntities.filter(e => e.overallThreatScore >= 75).length}
-            </div>
-            <p className="text-xs text-muted-foreground">Actively monitored by you</p>
-          </CardContent>
-        </Card>
-        <Card className="shadow-lg">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Contracts Scanned</CardTitle>
-            <FileText className="h-5 w-5 text-accent" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-foreground">1,250,345</div>
-            <p className="text-xs text-muted-foreground">+10k today</p>
-          </CardContent>
-        </Card>
-         <Card className="shadow-lg">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Supported Blockchains</CardTitle>
-            <BarChart3 className="h-5 w-5 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-foreground">3</div>
-            <p className="text-xs text-muted-foreground">ETH, BSC, Polygon</p>
-          </CardContent>
-        </Card>
+      <div className={`grid gap-6 md:grid-cols-2 lg:grid-cols-4 transition-all duration-500 ease-out delay-200 ${contentMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
+        {[
+          { title: "Total Threats Detected", value: mockThreats.length, subtext: `+ ${mockThreats.length > 3 ? 2 : 1} in last 24 hours for you`, Icon: AlertTriangle, iconColor: "text-destructive" },
+          { title: "High-Risk Entities", value: mockFlaggedEntities.filter(e => e.overallThreatScore >= 75).length, subtext: "Actively monitored by you", Icon: ShieldAlert, iconColor: "text-orange-500" },
+          { title: "Contracts Scanned", value: "1,250,345", subtext: "+10k today", Icon: FileText, iconColor: "text-accent" },
+          { title: "Supported Blockchains", value: "3", subtext: "ETH, BSC, Polygon", Icon: BarChart3, iconColor: "text-primary" },
+        ].map((item, index) => (
+          <Card key={index} className="shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all duration-300 ease-out">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{item.title}</CardTitle>
+              <item.Icon className={`h-5 w-5 ${item.iconColor}`} />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-foreground">{item.value}</div>
+              <p className="text-xs text-muted-foreground">{item.subtext}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
       
       <AlertDialog> 
-        <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
-          <Card className="shadow-lg col-span-1 lg:col-span-2">
+        <div className={`grid gap-6 md:grid-cols-1 lg:grid-cols-2 transition-all duration-500 ease-out delay-300 ${contentMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
+          <Card className="shadow-lg col-span-1 lg:col-span-2 hover:shadow-xl transition-shadow duration-300">
             <CardHeader>
               <CardTitle>Recent Threats</CardTitle>
               <CardDescription>Live feed of detected malicious activities and vulnerabilities relevant to you.</CardDescription>
@@ -247,7 +224,7 @@ export default function DashboardPage() {
                   </TableHeader>
                   <TableBody>
                     {filteredThreats.map((threat) => (
-                      <TableRow key={threat.id} className="hover:bg-muted/50">
+                      <TableRow key={threat.id} className="hover:bg-muted/60 transition-colors duration-150">
                         <TableCell>
                           <ThreatIcon type={threat.type} className="h-5 w-5 text-accent" />
                         </TableCell>
@@ -280,7 +257,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-lg">
+          <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
             <CardHeader>
               <CardTitle>Flagged Entities</CardTitle>
               <CardDescription>Wallets and contracts with notable threat history relevant to you.</CardDescription>
@@ -298,7 +275,7 @@ export default function DashboardPage() {
                   </TableHeader>
                   <TableBody>
                     {filteredFlaggedEntities.map((entity) => (
-                      <TableRow key={entity.id} className="hover:bg-muted/50">
+                      <TableRow key={entity.id} className="hover:bg-muted/60 transition-colors duration-150">
                         <TableCell className="font-mono text-sm">
                           <div className="flex items-center gap-2">
                             <span>{`${entity.address.substring(0, 8)}...${entity.address.substring(entity.address.length - 6)}`}</span>
@@ -325,7 +302,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
           
-          <Card className="shadow-lg">
+          <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
             <CardHeader>
               <CardTitle>Threat Distribution</CardTitle>
               <CardDescription>Overview of threat types detected.</CardDescription>

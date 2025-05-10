@@ -14,8 +14,13 @@ export default function HomePage() {
   const [scrollPhase, setScrollPhase] = useState<'hero' | 'unlocking' | 'unlocked'>('hero');
   const [parallaxScale, setParallaxScale] = useState(1);
   const unlockSectionRef = useRef<HTMLDivElement>(null);
+  const [heroContentLoaded, setHeroContentLoaded] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
+    const timer = setTimeout(() => setHeroContentLoaded(true), 100); // Small delay for hero content animation
+    
     const handleScroll = () => {
       if (!unlockSectionRef.current) return;
 
@@ -40,8 +45,15 @@ export default function HomePage() {
 
     window.addEventListener('scroll', handleScroll);
     handleScroll(); 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', handleScroll);
+    }
   }, []);
+
+  if (!isMounted) {
+    return null; // Avoid rendering until client-side mount to prevent hydration issues with animations
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -64,11 +76,11 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-background/70 dark:bg-background/80 backdrop-blur-sm"></div>
         
         <div className="relative z-10 flex flex-col items-center">
-          <FuturisticLogo className="w-28 h-28 md:w-36 md:h-36 text-primary mb-6 drop-shadow-lg" />
-          <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-6 tracking-tight drop-shadow-md">
+          <FuturisticLogo className={`w-28 h-28 md:w-36 md:h-36 text-primary mb-6 drop-shadow-lg transition-all duration-1000 ease-out ${heroContentLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`} />
+          <h1 className={`text-5xl md:text-7xl font-bold text-foreground mb-6 tracking-tight drop-shadow-md transition-all duration-1000 ease-out delay-100 ${heroContentLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
             BlockWatch AI Sentinel
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
+          <p className={`text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed transition-all duration-1000 ease-out delay-200 ${heroContentLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
             Your decentralized shield against smart contract threats. Real-time detection, proactive response, and unparalleled security for the blockchain ecosystem.
           </p>
           <div className={`transition-opacity duration-500 ${scrollPhase === 'hero' ? 'opacity-100' : 'opacity-0'}`}>
@@ -81,12 +93,17 @@ export default function HomePage() {
       {/* Unlock Animation Section */}
       <section ref={unlockSectionRef} className="py-20 md:py-32 text-center bg-background relative">
         <div 
-          className={`transition-all duration-1000 ease-in-out ${scrollPhase === 'hero' ? 'opacity-0 -translate-y-10' : 'opacity-100 translate-y-0'}`}
+          className={`transition-all duration-1000 ease-in-out [perspective:800px] ${scrollPhase === 'hero' ? 'opacity-0 -translate-y-10' : 'opacity-100 translate-y-0'}`}
         >
-          {scrollPhase === 'unlocking' || scrollPhase === 'hero' ? (
-            <Lock className={`w-24 h-24 md:w-32 md:h-32 mx-auto text-primary mb-6 transition-all duration-700 ease-out ${scrollPhase === 'unlocking' ? 'opacity-50 animate-pulse scale-95' : 'opacity-70 scale-100'}`} />
+          {scrollPhase === 'unlocked' ? (
+             <Unlock className={`w-24 h-24 md:w-32 md:h-32 mx-auto text-accent mb-6 transform transition-all duration-700 ease-out
+                                ${scrollPhase === 'unlocked' ? 'opacity-100 scale-110 [transform:rotateY(0deg)]' : 'opacity-0 scale-90 [transform:rotateY(-90deg)]'}`} />
           ) : (
-            <Unlock className="w-24 h-24 md:w-32 md:h-32 mx-auto text-accent mb-6 transition-all duration-700 ease-out transform scale-110" />
+            <Lock className={`w-24 h-24 md:w-32 md:h-32 mx-auto text-primary mb-6 transform transition-all duration-700 ease-out
+                              ${scrollPhase === 'unlocking' ? 'opacity-60 scale-95 [transform:rotateY(15deg)] animate-pulse' : 
+                                scrollPhase === 'hero' ? 'opacity-100 scale-100 [transform:rotateY(0deg)]' : 
+                                'opacity-0 scale-50 [transform:rotateY(90deg)]'}`} />
+
           )}
           <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
             {scrollPhase === 'unlocked' ? "Secure Access Portal Unlocked" : "Initiating Secure Connection"}
@@ -102,7 +119,7 @@ export default function HomePage() {
         className={`py-12 bg-background transition-all duration-1000 ease-out ${scrollPhase === 'unlocked' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20 pointer-events-none'}`}
       >
         <div className="container mx-auto px-4 flex justify-center">
-          <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 w-full max-w-md transform hover:scale-[1.02]">
+          <Card className="shadow-xl hover:shadow-2xl transition-all duration-300 w-full max-w-md transform hover:scale-[1.02]">
             <CardHeader className="text-center">
               <LogIn className="w-12 h-12 text-accent mx-auto mb-3" />
               <CardTitle className="text-2xl">
@@ -118,7 +135,7 @@ export default function HomePage() {
               </p>
             </CardContent>
             <CardFooter>
-              <Button asChild className="w-full text-lg py-6">
+              <Button asChild className="w-full text-lg py-6 hover:brightness-110 active:scale-95 transition-all">
                 <Link href="/signin">
                   Sign In Securely <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
@@ -151,7 +168,7 @@ export default function HomePage() {
                 { icon: Eye, title: "Comprehensive Analytics", text: "Gain deep insights from our intuitive dashboard, visualizing threat landscapes and risk scores." },
                 { icon: FuturisticLogo, title: "Multi-Blockchain Support", text: "Monitor activities across major blockchains like Ethereum, BSC, and Polygon." }
               ].map((item, index) => (
-                <li key={index} className="flex items-start gap-4 p-4 bg-card dark:bg-background rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
+                <li key={index} className="flex items-start gap-4 p-4 bg-card dark:bg-background rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.01]">
                   <item.icon className={`w-8 h-8 ${item.icon === FuturisticLogo ? 'text-primary' : 'text-accent'} mt-1 shrink-0`} />
                   <div>
                     <h3 className="font-semibold text-xl mb-1 text-card-foreground">{item.title}</h3>
