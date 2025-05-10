@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from "@/components/ui/button";
@@ -8,18 +9,18 @@ import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-10rem)] py-12 bg-background">
-      <header className="text-center mb-12">
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] py-12 bg-background"> {/* Adjusted min-h if header is 4rem */}
+      <header className="text-center mb-12 px-4">
         <ShieldCheck className="w-24 h-24 text-primary mx-auto mb-4" />
-        <h1 className="text-5xl font-bold text-foreground mb-3">
+        <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
           BlockWatch AI Sentinel
         </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
           Your decentralized shield against smart contract threats. Real-time detection, proactive response, and unparalleled security for the blockchain ecosystem.
         </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mb-16">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mb-16 px-4">
         <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -71,7 +72,7 @@ export default function HomePage() {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              Dive into comprehensive threat analysis and manage your smart contract security.
+              Dive into comprehensive threat analysis and manage your smart contract security. (Requires Sign In)
             </p>
           </CardContent>
           <CardFooter>
@@ -84,8 +85,8 @@ export default function HomePage() {
         </Card>
       </div>
 
-      <section className="w-full max-w-5xl p-8 bg-card rounded-lg shadow-lg">
-        <h2 className="text-3xl font-semibold text-center text-card-foreground mb-6">Why BlockWatch?</h2>
+      <section className="w-full max-w-5xl p-6 md:p-8 bg-card rounded-lg shadow-lg mx-4">
+        <h2 className="text-2xl md:text-3xl font-semibold text-center text-card-foreground mb-6">Why BlockWatch?</h2>
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
             <Image
@@ -118,7 +119,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer className="mt-16 text-center text-muted-foreground text-sm">
+      <footer className="mt-16 text-center text-muted-foreground text-sm px-4">
         <p>&copy; {new Date().getFullYear()} BlockWatch AI Sentinel. All rights reserved.</p>
         <p>Innovating for a safer decentralized future.</p>
       </footer>

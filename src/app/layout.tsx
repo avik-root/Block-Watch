@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
@@ -20,7 +21,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'BlockWatch AI Sentinel',
+  title: 'BlockWatch AI Sentinel Dashboard',
   description: 'Decentralized Threat Detection & Response System for Smart Contracts',
 };
 
@@ -65,7 +66,6 @@ export default function RootLayout({
                 <div className="flex items-center gap-2">
                   <SidebarTrigger className="md:hidden" />
                   {/* The h1 title will now be managed by individual pages for more specific titles */}
-                  {/* <h1 className="text-xl font-semibold text-foreground">BlockWatch AI Sentinel</h1> */}
                 </div>
                 <div className="flex items-center gap-4">
                   <ThemeToggleButton />

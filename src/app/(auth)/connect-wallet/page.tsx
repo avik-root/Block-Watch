@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from "@/components/ui/button";
@@ -29,7 +30,7 @@ export default function ConnectWalletPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-10rem)] py-12 bg-background">
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] py-12 bg-background px-4"> {/* Adjusted min-h */}
       <Card className="w-full max-w-lg shadow-xl">
         <CardHeader className="text-center">
           <Wallet className="w-16 h-16 text-primary mx-auto mb-4" />
