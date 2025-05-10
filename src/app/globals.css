@@ -39,6 +39,12 @@
     --sidebar-accent-foreground: 0 0% 98%; /* Almost White text on hover */
     --sidebar-border: 225 23% 20%; /* Darker border for sidebar elements */
     --sidebar-ring: 173 58% 50%; /* Teal for focus ring */
+
+    /* Animated Gradient Colors */
+    --gradient-start: hsl(210, 22%, 95%);
+    --gradient-mid1: hsl(190, 50%, 90%);
+    --gradient-mid2: hsl(210, 30%, 92%);
+    --gradient-end: hsl(173, 50%, 88%);
   }
 
   .dark {
@@ -76,6 +82,12 @@
     --sidebar-accent-foreground: 0 0% 98%; /* Almost White text on hover */
     --sidebar-border: 225 23% 10%; /* Darker border for sidebar elements */
     --sidebar-ring: 173 58% 55%; /* Teal for focus ring */
+
+    /* Animated Gradient Colors - Dark Mode */
+    --gradient-start: hsl(240, 10%, 4%);
+    --gradient-mid1: hsl(225, 20%, 8%);
+    --gradient-mid2: hsl(240, 15%, 6%);
+    --gradient-end: hsl(173, 50%, 10%);
   }
 }
 
@@ -86,4 +98,16 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-gradient-background {
+  background: linear-gradient(-45deg, var(--gradient-start), var(--gradient-mid1), var(--gradient-mid2), var(--gradient-end));
+  background-size: 400% 400%;
+  animation: gradientAnimation 15s ease infinite;
 }

@@ -10,7 +10,7 @@ import { ThemeToggleButton } from "@/components/theme-toggle-button";
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-12 bg-background">
+    <div className="flex flex-col items-center justify-center min-h-screen py-12">
       <div className="absolute top-4 right-4">
         <ThemeToggleButton />
       </div>

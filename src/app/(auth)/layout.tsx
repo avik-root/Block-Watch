@@ -13,7 +13,7 @@ export default function AuthLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col animated-gradient-background">
       {/* Header removed */}
       <main className="flex-1"> {/* Pages will handle their own internal layout/centering and padding */}
         {children}

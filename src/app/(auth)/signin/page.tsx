@@ -31,7 +31,7 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-12 bg-background px-4">
+    <div className="flex flex-col items-center justify-center min-h-screen py-12 px-4">
       <div className="absolute top-4 right-4">
         <ThemeToggleButton />
       </div>
