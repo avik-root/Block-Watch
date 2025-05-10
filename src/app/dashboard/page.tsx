@@ -216,9 +216,9 @@ export default function DashboardPage() {
                     <TableRow>
                       <TableHead className="w-[50px]">Type</TableHead>
                       <TableHead>Address</TableHead>
-                      <TableHead className="w-[120px]">Blockchain</TableHead>
+                      <TableHead className="w-[120px] hidden sm:table-cell">Blockchain</TableHead>
                       <TableHead className="w-[120px]">Score</TableHead>
-                      <TableHead className="w-[150px]">Timestamp</TableHead>
+                      <TableHead className="w-[150px] hidden md:table-cell">Timestamp</TableHead>
                       <TableHead className="w-[80px] text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -236,11 +236,11 @@ export default function DashboardPage() {
                             </Button>
                           </div>
                         </TableCell>
-                        <TableCell>{threat.blockchain}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{threat.blockchain}</TableCell>
                         <TableCell>
                           <ThreatScoreBadge score={threat.threatScore} />
                         </TableCell>
-                        <TableCell>{new Date(threat.timestamp).toLocaleString()}</TableCell>
+                        <TableCell className="hidden md:table-cell">{new Date(threat.timestamp).toLocaleString()}</TableCell>
                         <TableCell className="text-right">
                           <AlertDialogTrigger asChild>
                             <Button variant="outline" size="sm" onClick={() => setSelectedThreat(threat)}>
@@ -270,7 +270,7 @@ export default function DashboardPage() {
                       <TableHead>Address</TableHead>
                       <TableHead>Type</TableHead>
                       <TableHead>Score</TableHead>
-                      <TableHead>Last Threat</TableHead>
+                      <TableHead className="hidden sm:table-cell">Last Threat</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -288,7 +288,7 @@ export default function DashboardPage() {
                         <TableCell>
                           <ThreatScoreBadge score={entity.overallThreatScore} />
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="hidden sm:table-cell">
                           <div className="flex items-center gap-1">
                             <ThreatIcon type={entity.lastThreatType} className="h-4 w-4 text-muted-foreground" />
                             {entity.lastThreatType}
@@ -382,3 +382,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+
