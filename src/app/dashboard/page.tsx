@@ -28,6 +28,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from "@/hooks/use-toast";
@@ -191,183 +192,183 @@ export default function DashboardPage() {
         </Card>
       </div>
       
-      <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
-        <Card className="shadow-lg col-span-1 lg:col-span-2">
-          <CardHeader>
-            <CardTitle>Recent Threats</CardTitle>
-            <CardDescription>Live feed of detected malicious activities and vulnerabilities.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ScrollArea className="h-[400px]">
-              <Table>
-                <TableHeader className="sticky top-0 bg-card z-10">
-                  <TableRow>
-                    <TableHead className="w-[50px]">Type</TableHead>
-                    <TableHead>Address</TableHead>
-                    <TableHead className="w-[120px]">Blockchain</TableHead>
-                    <TableHead className="w-[120px]">Score</TableHead>
-                    <TableHead className="w-[150px]">Timestamp</TableHead>
-                    <TableHead className="w-[80px] text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredThreats.map((threat) => (
-                    <TableRow key={threat.id} className="hover:bg-muted/50">
-                      <TableCell>
-                        <ThreatIcon type={threat.type} className="h-5 w-5 text-accent" />
-                      </TableCell>
-                      <TableCell className="font-mono text-sm">
-                        <div className="flex items-center gap-2">
-                          <span>{`${threat.address.substring(0, 8)}...${threat.address.substring(threat.address.length - 6)}`}</span>
-                          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleCopyToClipboard(threat.address)}>
-                            <Copy className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                      <TableCell>{threat.blockchain}</TableCell>
-                      <TableCell>
-                        <ThreatScoreBadge score={threat.threatScore} />
-                      </TableCell>
-                      <TableCell>{new Date(threat.timestamp).toLocaleString()}</TableCell>
-                      <TableCell className="text-right">
-                        <Button variant="outline" size="sm" onClick={() => setSelectedThreat(threat)}>
-                          <Eye className="h-4 w-4 mr-1 md:mr-2" />
-                          <span className="hidden md:inline">View</span>
-                        </Button>
-                      </TableCell>
+      <AlertDialog> {/* Moved AlertDialog to wrap the part of the table that uses its trigger */}
+        <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
+          <Card className="shadow-lg col-span-1 lg:col-span-2">
+            <CardHeader>
+              <CardTitle>Recent Threats</CardTitle>
+              <CardDescription>Live feed of detected malicious activities and vulnerabilities.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[400px]">
+                <Table>
+                  <TableHeader className="sticky top-0 bg-card z-10">
+                    <TableRow>
+                      <TableHead className="w-[50px]">Type</TableHead>
+                      <TableHead>Address</TableHead>
+                      <TableHead className="w-[120px]">Blockchain</TableHead>
+                      <TableHead className="w-[120px]">Score</TableHead>
+                      <TableHead className="w-[150px]">Timestamp</TableHead>
+                      <TableHead className="w-[80px] text-right">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </ScrollArea>
-          </CardContent>
-        </Card>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredThreats.map((threat) => (
+                      <TableRow key={threat.id} className="hover:bg-muted/50">
+                        <TableCell>
+                          <ThreatIcon type={threat.type} className="h-5 w-5 text-accent" />
+                        </TableCell>
+                        <TableCell className="font-mono text-sm">
+                          <div className="flex items-center gap-2">
+                            <span>{`${threat.address.substring(0, 8)}...${threat.address.substring(threat.address.length - 6)}`}</span>
+                            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleCopyToClipboard(threat.address)}>
+                              <Copy className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                        <TableCell>{threat.blockchain}</TableCell>
+                        <TableCell>
+                          <ThreatScoreBadge score={threat.threatScore} />
+                        </TableCell>
+                        <TableCell>{new Date(threat.timestamp).toLocaleString()}</TableCell>
+                        <TableCell className="text-right">
+                          <AlertDialogTrigger asChild>
+                            <Button variant="outline" size="sm" onClick={() => setSelectedThreat(threat)}>
+                              <Eye className="h-4 w-4 mr-1 md:mr-2" />
+                              <span className="hidden md:inline">View</span>
+                            </Button>
+                          </AlertDialogTrigger>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </ScrollArea>
+            </CardContent>
+          </Card>
 
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle>Flagged Entities</CardTitle>
-            <CardDescription>Wallets and contracts with notable threat history.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ScrollArea className="h-[300px]">
-              <Table>
-                <TableHeader className="sticky top-0 bg-card z-10">
-                  <TableRow>
-                    <TableHead>Address</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Score</TableHead>
-                    <TableHead>Last Threat</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredFlaggedEntities.map((entity) => (
-                    <TableRow key={entity.id} className="hover:bg-muted/50">
-                      <TableCell className="font-mono text-sm">
-                         <div className="flex items-center gap-2">
-                          <span>{`${entity.address.substring(0, 8)}...${entity.address.substring(entity.address.length - 6)}`}</span>
-                          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleCopyToClipboard(entity.address)}>
-                            <Copy className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                      <TableCell>{entity.entityType}</TableCell>
-                      <TableCell>
-                        <ThreatScoreBadge score={entity.overallThreatScore} />
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <ThreatIcon type={entity.lastThreatType} className="h-4 w-4 text-muted-foreground" />
-                          {entity.lastThreatType}
-                        </div>
-                      </TableCell>
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle>Flagged Entities</CardTitle>
+              <CardDescription>Wallets and contracts with notable threat history.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[300px]">
+                <Table>
+                  <TableHeader className="sticky top-0 bg-card z-10">
+                    <TableRow>
+                      <TableHead>Address</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Score</TableHead>
+                      <TableHead>Last Threat</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </ScrollArea>
-          </CardContent>
-        </Card>
-        
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle>Threat Distribution</CardTitle>
-            <CardDescription>Overview of threat types detected.</CardDescription>
-          </CardHeader>
-          <CardContent className="aspect-[16/9]">
-            <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="threatType" tickLine={false} axisLine={false} tickMargin={8} />
-                  <YAxis tickLine={false} axisLine={false} tickMargin={8} />
-                  <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-                  <Bar dataKey="count" radius={4} />
-                   <ChartLegend content={<ChartLegendContent />} />
-                </BarChart>
-              </ResponsiveContainer>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-      </div>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredFlaggedEntities.map((entity) => (
+                      <TableRow key={entity.id} className="hover:bg-muted/50">
+                        <TableCell className="font-mono text-sm">
+                          <div className="flex items-center gap-2">
+                            <span>{`${entity.address.substring(0, 8)}...${entity.address.substring(entity.address.length - 6)}`}</span>
+                            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleCopyToClipboard(entity.address)}>
+                              <Copy className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                        <TableCell>{entity.entityType}</TableCell>
+                        <TableCell>
+                          <ThreatScoreBadge score={entity.overallThreatScore} />
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1">
+                            <ThreatIcon type={entity.lastThreatType} className="h-4 w-4 text-muted-foreground" />
+                            {entity.lastThreatType}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </ScrollArea>
+            </CardContent>
+          </Card>
+          
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle>Threat Distribution</CardTitle>
+              <CardDescription>Overview of threat types detected.</CardDescription>
+            </CardHeader>
+            <CardContent className="aspect-[16/9]">
+              <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={chartData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="threatType" tickLine={false} axisLine={false} tickMargin={8} />
+                    <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+                    <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                    <Bar dataKey="count" radius={4} />
+                    <ChartLegend content={<ChartLegendContent />} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+        </div>
       
-      {selectedThreat && (
-         <AlertDialog open={!!selectedThreat} onOpenChange={(open) => !open && setSelectedThreat(null)}>
+        {selectedThreat && (
           <AlertDialogContent className="max-w-2xl">
-            <AlertDialogHeader>
-              <AlertDialogTitle className="flex items-center gap-2">
-                <ThreatIcon type={selectedThreat.type} className="h-6 w-6 text-accent" />
-                Threat Details: {selectedThreat.type}
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                Detailed information about the detected threat.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <ScrollArea className="max-h-[60vh] pr-4">
-              <div className="space-y-4 py-4">
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">Address:</h3>
-                  <p className="font-mono text-sm text-muted-foreground bg-muted p-2 rounded-md flex items-center justify-between">
-                    {selectedThreat.address}
-                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleCopyToClipboard(selectedThreat.address)}>
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">Blockchain:</h3>
-                  <p className="text-sm text-muted-foreground">{selectedThreat.blockchain}</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">Threat Score:</h3>
-                  <ThreatScoreBadge score={selectedThreat.threatScore} />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">Timestamp:</h3>
-                  <p className="text-sm text-muted-foreground">{new Date(selectedThreat.timestamp).toLocaleString()}</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">Description:</h3>
-                  <p className="text-sm text-muted-foreground">{selectedThreat.description}</p>
-                </div>
-                 {selectedThreat.rawDetails && (
+              <AlertDialogHeader>
+                <AlertDialogTitle className="flex items-center gap-2">
+                  <ThreatIcon type={selectedThreat.type} className="h-6 w-6 text-accent" />
+                  Threat Details: {selectedThreat.type}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  Detailed information about the detected threat.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <ScrollArea className="max-h-[60vh] pr-4">
+                <div className="space-y-4 py-4">
                   <div>
-                    <h3 className="font-semibold text-foreground mb-1">Raw Details:</h3>
-                    <pre className="text-xs text-muted-foreground bg-muted p-3 rounded-md overflow-x-auto whitespace-pre-wrap">
-                      {selectedThreat.rawDetails}
-                    </pre>
+                    <h3 className="font-semibold text-foreground mb-1">Address:</h3>
+                    <p className="font-mono text-sm text-muted-foreground bg-muted p-2 rounded-md flex items-center justify-between">
+                      {selectedThreat.address}
+                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleCopyToClipboard(selectedThreat.address)}>
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </p>
                   </div>
-                )}
-              </div>
-            </ScrollArea>
-            <AlertDialogFooter>
-              <AlertDialogCancel onClick={() => setSelectedThreat(null)}>Close</AlertDialogCancel>
-              {/* <AlertDialogAction>Take Action</AlertDialogAction> */}
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
-
+                  <div>
+                    <h3 className="font-semibold text-foreground mb-1">Blockchain:</h3>
+                    <p className="text-sm text-muted-foreground">{selectedThreat.blockchain}</p>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground mb-1">Threat Score:</h3>
+                    <ThreatScoreBadge score={selectedThreat.threatScore} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground mb-1">Timestamp:</h3>
+                    <p className="text-sm text-muted-foreground">{new Date(selectedThreat.timestamp).toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground mb-1">Description:</h3>
+                    <p className="text-sm text-muted-foreground">{selectedThreat.description}</p>
+                  </div>
+                  {selectedThreat.rawDetails && (
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-1">Raw Details:</h3>
+                      <pre className="text-xs text-muted-foreground bg-muted p-3 rounded-md overflow-x-auto whitespace-pre-wrap">
+                        {selectedThreat.rawDetails}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={() => setSelectedThreat(null)}>Close</AlertDialogCancel>
+                {/* <AlertDialogAction>Take Action</AlertDialogAction> */}
+              </AlertDialogFooter>
+            </AlertDialogContent>
+        )}
+      </AlertDialog>
     </div>
   );
 }
-
